@@ -106,7 +106,7 @@ const Status = styled.span`
   letter-spacing: 1px;
 `;
 
-const Homepage = () => {
+const Dashboard = () => {
   const dispatch = useDispatch();
   const date = new Date();
   const today = new Intl.DateTimeFormat("en-US", {
@@ -130,7 +130,7 @@ const Homepage = () => {
             <FaLongArrowAltRight />
           </IconContainer>
           <LinkContainer>
-            <StyLink to="/usernotes">tech notes</StyLink>
+            <StyLink to="/notes">view tech notes</StyLink>
           </LinkContainer>
         </IconLinkContainer>
         <IconLinkContainer>
@@ -138,7 +138,7 @@ const Homepage = () => {
             <FaLongArrowAltRight />
           </IconContainer>
           <LinkContainer>
-            <StyLink to="/manage">settings</StyLink>
+            <StyLink to="/manage">view user settings</StyLink>
           </LinkContainer>
         </IconLinkContainer>
       </Main>
@@ -153,4 +153,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default Dashboard;

@@ -42,3 +42,24 @@ export const mockDataNotes = [
     title: "Bob Jone's Iphone",
   },
 ];
+
+export const mockdataUserNotes = [
+  {
+    id: 1,
+    completed: false,
+    title: "first Job",
+    created: "June 05",
+  },
+  {
+    id: 2,
+    completed: true,
+    title: "second Job",
+    created: "June 05",
+  },
+  {
+    id: 3,
+    completed: false,
+    title: "third Job",
+    created: "June 05",
+  },
+];
