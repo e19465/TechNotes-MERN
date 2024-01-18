@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { Navigate, Route, Routes } from "react-router-dom";
+import Homepage from "./pages/Homepage";
+import Registerpage from "./pages/Registerpage";
+import Loginpage from "./pages/Loginpage";
+import Publicpage from "./pages/Publicpage";
+import Notespage from "./pages/Notespage";
+import ManageUserspage from "./pages/ManageUserspage";
+import { useSelector } from "react-redux";
 
 function App() {
+  const { user } = useSelector((store) => store.user);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+        <Route
+          exact
+          path="/"
+          element={user ? <Homepage /> : <Navigate to="/public" />}
+        />
+        <Route path="/register" element={<Registerpage />} />
+        <Route path="/login" element={<Loginpage />} />
+        <Route path="/public" element={<Publicpage />} />
+        <Route path="/notes" element={<Notespage />} />
+        <Route path="/manage" element={<ManageUserspage />} />
+      </Routes>
     </div>
   );
 }

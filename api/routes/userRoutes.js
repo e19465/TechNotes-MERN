@@ -25,9 +25,11 @@ router.post("/register", async (req, res) => {
       password: hashedPW,
     });
 
-    const savedUser = await newUser.save();
-    const { password, ...others } = savedUser._doc;
-    res.status(201).json(others);
+    // const savedUser = await newUser.save();
+    // const { password, ...others } = savedUser._doc;
+    // res.status(201).json(others);
+    await newUser.save();
+    res.status(201).json(`user ${userUsername} has been created!`);
     //////////////////////////////
   } catch (err) {
     res.status(500).json(err);
