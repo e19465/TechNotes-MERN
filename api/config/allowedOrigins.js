@@ -1,3 +1,3 @@
-const allowedOrigins = ["http://localhost:3000", "http://localhost:5000"];
+const allowedOrigins = ["https://technotes-app-qa39.onrender.com"];
 
 module.exports = allowedOrigins;
