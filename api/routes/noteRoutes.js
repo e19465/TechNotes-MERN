@@ -77,6 +77,8 @@ router.get("/user/allnotes/:userId", async (req, res) => {
 router.put("/update/:noteId", async (req, res) => {
   const noteId = req.params.noteId;
   const userId = req.body.userId;
+  const updatedTitle = req.body.title;
+  const updatedText = req.body.text;
 
   if (!userId || !noteId) {
     return res.status(400).json("NoteID and UserID required!");
@@ -100,7 +102,10 @@ router.put("/update/:noteId", async (req, res) => {
 
     if (allnotes && req.body.title) {
       for (const note of allnotes) {
-        if (note.title.toString() === req.body.title) {
+        if (
+          note.title.toString() === req.body.title &&
+          note._id.toString() !== noteId
+        ) {
           return res
             .status(409)
             .json("User already have a note with given title!");
@@ -108,17 +113,34 @@ router.put("/update/:noteId", async (req, res) => {
       }
     }
 
-    const updatedPost = await Notes.findByIdAndUpdate(
-      noteId,
-      { $set: req.body },
-      { new: true }
-    );
+    foundNote.title = updatedTitle;
+    foundNote.text = updatedText;
+
+    const updatedPost = await foundNote.save();
 
     res.status(200).json(updatedPost);
     //////////////////////////////////
   } catch (err) {
     res.status(500).json(err);
   }
+});
+
+// update note status
+router.patch("/update/status/:noteId", async (req, res) => {
+  const noteId = req.params.noteId;
+  const comp = req.body.completed;
+  if (!noteId) {
+    return res.status(400).json("Note Id required!");
+  }
+  try {
+    const foundNote = await Notes.findById(noteId);
+    if (!foundNote) {
+      return res.status(404).json("Note not found!");
+    }
+    foundNote.completed = comp;
+    const savedNote = await foundNote.save();
+    res.status(200).json(savedNote);
+  } catch (err) {}
 });
 
 // delete a note

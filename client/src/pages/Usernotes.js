@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { IoMdHome } from "react-icons/io";
-import { mockdataUserNotes } from "../data/data";
 import { RiEditBoxFill } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
+import { updateNoteId } from "../Redux/features/noteUpdate/noteUpdateSlice";
 
 const NotesPageMain = styled.div`
   width: 100%;
@@ -88,6 +89,17 @@ const Td = styled.td`
 const Tbody = styled.tbody``;
 
 const UserNotes = () => {
+  const { notes } = useSelector((store) => store.notes);
+  const { user } = useSelector((store) => store.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleClick = (id) => {
+    console.log(id);
+    dispatch(updateNoteId(id));
+    navigate("/edit_note");
+  };
+
   return (
     <NotesPageMain>
       <Header>Notes List</Header>
@@ -102,8 +114,8 @@ const UserNotes = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {mockdataUserNotes.map((note) => (
-              <Tr key={note.id}>
+            {notes?.map((note) => (
+              <Tr key={note._id}>
                 <Td
                   style={
                     note.completed === true
@@ -113,10 +125,13 @@ const UserNotes = () => {
                 >
                   {note.completed === true ? "Completed" : "Open"}
                 </Td>
-                <Td>{note.created}</Td>
+                <Td>{new Date(note.createdAt).toLocaleDateString()}</Td>
                 <Td>{note.title}</Td>
                 <Td style={{ fontSize: "25px", cursor: "pointer" }}>
-                  <RiEditBoxFill />
+                  <RiEditBoxFill
+                    role="button"
+                    onClick={() => handleClick(note?._id)}
+                  />
                 </Td>
               </Tr>
             ))}
@@ -129,8 +144,8 @@ const UserNotes = () => {
             <IoMdHome />
           </IconContainer>
         </SLink>
-        <Current>Current User: Admin</Current>
-        <Status>Status: Active</Status>
+        <Current>Current User: {user.roles}</Current>
+        <Status>Status: {user.active ? "Active" : "Diactivated"}</Status>
       </Footer>
     </NotesPageMain>
   );

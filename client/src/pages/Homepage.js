@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { IoLogOutSharp } from "react-icons/io5";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../Redux/features/user/userSlice";
 import { persistor } from "../Redux/store";
 
@@ -107,6 +107,7 @@ const Status = styled.span`
 `;
 
 const Homepage = () => {
+  const { user } = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const date = new Date();
   const today = new Intl.DateTimeFormat("en-US", {
@@ -130,7 +131,7 @@ const Homepage = () => {
             <FaLongArrowAltRight />
           </IconContainer>
           <LinkContainer>
-            <StyLink to="/usernotes">tech notes</StyLink>
+            <StyLink to="/usernotes">your notes</StyLink>
           </LinkContainer>
         </IconLinkContainer>
         <IconLinkContainer>
@@ -138,7 +139,7 @@ const Homepage = () => {
             <FaLongArrowAltRight />
           </IconContainer>
           <LinkContainer>
-            <StyLink to="/manage">settings</StyLink>
+            <StyLink to="/createnote">create a note</StyLink>
           </LinkContainer>
         </IconLinkContainer>
       </Main>
@@ -146,8 +147,8 @@ const Homepage = () => {
         <FooterIcon title="logout">
           <IoLogOutSharp role="button" onClick={handleLogout} />
         </FooterIcon>
-        <Current>Current User: Admin</Current>
-        <Status>Status: Active</Status>
+        <Current>Current User: {user.roles}</Current>
+        <Status>Status: {user.active ? "Active" : "Diactivated"}</Status>
       </Footer>
     </HomepageMain>
   );

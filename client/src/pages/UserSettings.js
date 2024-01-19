@@ -1,9 +1,9 @@
-import { useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import api from "../api";
-import { IoMdHome } from "react-icons/io";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../Redux/features/user/userSlice";
 
 const RegMain = styled.div`
   width: 100%;
@@ -13,7 +13,6 @@ const RegMain = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 5;
-  position: relative;
 `;
 
 const FormConatainer = styled.div`
@@ -85,66 +84,31 @@ const Btn = styled.button`
   }
 `;
 
-const Footer = styled.footer`
-  width: 95%;
-  padding: 10px;
-  border-top: 1px solid #f5f5f5;
-  display: flex;
-  position: absolute;
-  bottom: 0;
-  color: #f5f5f5;
-`;
-
-const Current = styled.span`
-  margin-right: 30px;
-  font-size: 15px;
-  letter-spacing: 1px;
-`;
-const Status = styled.span`
-  font-size: 15px;
-  letter-spacing: 1px;
-`;
-
-const SLink = styled(Link)`
-  text-decoration: none;
-  color: #f5f5f5;
-`;
-
-const IconContainer = styled.span`
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 20px;
-  font-size: 20px;
-  cursor: pointer;
-`;
-
-const Registerpage = () => {
+const UserSettings = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.user);
   const navigate = useNavigate();
   const usernameRegX = /^\S+$/;
-  const usernameRef = useRef();
+  const [userName, setUserName] = useState(user?.username);
   const passwordRef = useRef();
   const confPassRef = useRef();
-  const { user } = useSelector((store) => store.user);
   const handleRegister = async (e) => {
     e.preventDefault();
     if (
-      usernameRegX.test(usernameRef.current.value) &&
+      usernameRegX.test(userName) &&
       passwordRef.current.value === confPassRef.current.value
     ) {
       try {
-        const response = await api.post("/users/register", {
-          username: usernameRef.current.value,
+        const response = await api.put(`/users/update/${user?._id}`, {
+          username: userName,
           password: passwordRef.current.value,
         });
-        alert(response.data);
+        dispatch(updateUser(response.data));
         console.log(response.data);
-        usernameRef.current.value = "";
+        alert("User info usuccessfully updated!");
+        setUserName("");
         passwordRef.current.value = "";
-        confPassRef.current.value = "";
-        navigate("/login");
+        navigate("/");
       } catch (err) {
         console.log(err);
       }
@@ -158,14 +122,15 @@ const Registerpage = () => {
     <RegMain>
       <FormConatainer>
         <HEAD>Michael J. Repair Shop</HEAD>
-        <PARA>register</PARA>
+        <PARA>update</PARA>
         <StyledForm onSubmit={handleRegister}>
           <Input
             type="text"
             required
             placeholder="Username"
             name="username"
-            ref={usernameRef}
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
           />
           <Input
             type="password"
@@ -181,20 +146,11 @@ const Registerpage = () => {
             name="confirmPassword"
             ref={confPassRef}
           />
-          <Btn type="submit">register</Btn>
+          <Btn type="submit">save</Btn>
         </StyledForm>
       </FormConatainer>
-      <Footer>
-        <SLink to="/">
-          <IconContainer title="Back to Home">
-            <IoMdHome />
-          </IconContainer>
-        </SLink>
-        <Current>Current User: {user.roles.join(", ")}</Current>
-        <Status>Status: {user.active ? "Active" : "Diactivated"}</Status>
-      </Footer>
     </RegMain>
   );
 };
 
-export default Registerpage;
+export default UserSettings;

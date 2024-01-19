@@ -141,6 +141,22 @@ const Dashboard = () => {
             <StyLink to="/manage">view user settings</StyLink>
           </LinkContainer>
         </IconLinkContainer>
+        <IconLinkContainer>
+          <IconContainer>
+            <FaLongArrowAltRight />
+          </IconContainer>
+          <LinkContainer>
+            <StyLink to="/register">add new user</StyLink>
+          </LinkContainer>
+        </IconLinkContainer>
+        <IconLinkContainer>
+          <IconContainer>
+            <FaLongArrowAltRight />
+          </IconContainer>
+          <LinkContainer>
+            <StyLink to="/createnote">add new note</StyLink>
+          </LinkContainer>
+        </IconLinkContainer>
       </Main>
       <Footer>
         <FooterIcon title="logout">

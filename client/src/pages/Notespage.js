@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { IoMdHome } from "react-icons/io";
-import { mockDataNotes } from "../data/data";
-import { RiEditBoxFill } from "react-icons/ri";
+import { useSelector } from "react-redux";
+import { MdOutlineSaveAs } from "react-icons/md";
+import { useState } from "react";
 
 const NotesPageMain = styled.div`
   width: 100%;
@@ -88,6 +89,18 @@ const Td = styled.td`
 const Tbody = styled.tbody``;
 
 const Notespage = () => {
+  let { allnotes } = useSelector((store) => store.allNotes);
+  const { user } = useSelector((store) => store.user);
+  const [notesState, setNotesState] = useState(allnotes);
+
+  const handleCheckboxChange = (noteId) => {
+    setNotesState((prevNotesState) =>
+      prevNotesState.map((note) =>
+        note._id === noteId ? { ...note, completed: !note.completed } : note
+      )
+    );
+  };
+
   return (
     <NotesPageMain>
       <Header>Notes List</Header>
@@ -95,32 +108,42 @@ const Notespage = () => {
         <Table>
           <Thead>
             <Tr>
+              <Th scope="col">mark</Th>
               <Th scope="col">status</Th>
               <Th scope="col">created</Th>
               <Th scope="col">updated</Th>
               <Th scope="col">title</Th>
-              <Th scope="col">owner</Th>
-              <Th scope="col">edit</Th>
+              <Th scope="col">owner id</Th>
+              <Th scope="col">save</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {mockDataNotes.map((note) => (
-              <Tr key={note.id}>
-                <Td
-                  style={
-                    note.status === "Completed"
-                      ? { color: "#4cceac" }
-                      : { color: "#db4f4a" }
-                  }
-                >
-                  {note.status}
+            {notesState.map((note) => (
+              <Tr key={note._id}>
+                <Td>
+                  {" "}
+                  <input
+                    type="checkbox"
+                    checked={note.completed || false}
+                    onChange={() => handleCheckboxChange(note._id)}
+                    style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                  />{" "}
                 </Td>
-                <Td>{note.created}</Td>
-                <Td>{note.updated}</Td>
+                <Td
+                  style={{
+                    color: note.completed ? "#4cceac" : "#db4f4a",
+                    cursor: "pointer",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {note.completed ? "Completed" : "Open"}
+                </Td>
+                <Td>{new Date(note.createdAt).toLocaleDateString()}</Td>
+                <Td>{new Date(note.updatedAt).toLocaleDateString()}</Td>
                 <Td>{note.title}</Td>
-                <Td>{note.owner}</Td>
+                <Td>{note.user}</Td>
                 <Td style={{ fontSize: "25px", cursor: "pointer" }}>
-                  <RiEditBoxFill />
+                  <MdOutlineSaveAs role="button" />
                 </Td>
               </Tr>
             ))}
@@ -133,8 +156,8 @@ const Notespage = () => {
             <IoMdHome />
           </IconContainer>
         </SLink>
-        <Current>Current User: Admin</Current>
-        <Status>Status: Active</Status>
+        <Current>Current User: {user.roles.join(", ")}</Current>
+        <Status>Status: {user.active ? "Active" : "Diactivated"}</Status>
       </Footer>
     </NotesPageMain>
   );

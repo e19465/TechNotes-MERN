@@ -2,8 +2,9 @@ import { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import api from "../api";
+import { useDispatch, useSelector } from "react-redux";
+import { addNewNote } from "../Redux/features/notes/noteSlice";
 import { IoMdHome } from "react-icons/io";
-import { useSelector } from "react-redux";
 
 const RegMain = styled.div`
   width: 100%;
@@ -18,9 +19,10 @@ const RegMain = styled.div`
 
 const FormConatainer = styled.div`
   width: 400px;
-  min-height: 350px;
+  min-height: 400px;
   background-color: #f5f5f5;
   border-radius: 8px;
+  /* flex: 1; */
 `;
 
 const HEAD = styled.p`
@@ -57,10 +59,6 @@ const Input = styled.input`
   border: none;
   border-bottom: 1px solid #333;
   outline: none;
-
-  &::placeholder {
-    color: #333;
-  }
 `;
 
 const Btn = styled.button`
@@ -83,6 +81,17 @@ const Btn = styled.button`
     background-color: #333;
     color: orange;
   }
+`;
+
+const TextArea = styled.textarea`
+  width: 80%;
+  height: 100px;
+  margin-bottom: 20px;
+  background-color: #c2c2c2;
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid #333;
+  outline: none;
 `;
 
 const Footer = styled.footer`
@@ -121,67 +130,55 @@ const IconContainer = styled.span`
   cursor: pointer;
 `;
 
-const Registerpage = () => {
-  const navigate = useNavigate();
-  const usernameRegX = /^\S+$/;
-  const usernameRef = useRef();
-  const passwordRef = useRef();
-  const confPassRef = useRef();
+const Createnote = () => {
   const { user } = useSelector((store) => store.user);
-  const handleRegister = async (e) => {
+  const navigate = useNavigate();
+  const titleRef = useRef();
+  const textAreaRef = useRef();
+  const dispatch = useDispatch();
+  const handleAddNote = async (e) => {
     e.preventDefault();
-    if (
-      usernameRegX.test(usernameRef.current.value) &&
-      passwordRef.current.value === confPassRef.current.value
-    ) {
-      try {
-        const response = await api.post("/users/register", {
-          username: usernameRef.current.value,
-          password: passwordRef.current.value,
-        });
-        alert(response.data);
-        console.log(response.data);
-        usernameRef.current.value = "";
-        passwordRef.current.value = "";
-        confPassRef.current.value = "";
-        navigate("/login");
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      alert(
-        "Username can't have white spaces and two passwords must be match!"
-      );
+    try {
+      const response = await api.post("/notes/newnote", {
+        user: user?._id,
+        title: titleRef.current.value,
+        text: textAreaRef.current.value,
+      });
+      dispatch(addNewNote(response.data));
+      alert("Note has been successfully added!");
+      titleRef.current.value = "";
+      textAreaRef.current.value = "";
+      navigate("/");
+    } catch (err) {
+      console.log(err);
     }
   };
   return (
     <RegMain>
       <FormConatainer>
         <HEAD>Michael J. Repair Shop</HEAD>
-        <PARA>register</PARA>
-        <StyledForm onSubmit={handleRegister}>
+        <PARA>Create a Note</PARA>
+        <StyledForm onSubmit={handleAddNote}>
           <Input
             type="text"
             required
-            placeholder="Username"
-            name="username"
-            ref={usernameRef}
+            placeholder="Id"
+            name="Id"
+            id="Id"
+            title="User ID (read only)"
+            value={user?._id}
+            readOnly
           />
           <Input
-            type="password"
+            type="text"
             required
-            placeholder="Password"
-            name="password"
-            ref={passwordRef}
+            placeholder="title"
+            id="title"
+            name="title"
+            ref={titleRef}
           />
-          <Input
-            type="password"
-            required
-            placeholder="Confirm Password"
-            name="confirmPassword"
-            ref={confPassRef}
-          />
-          <Btn type="submit">register</Btn>
+          <TextArea placeholder="Description..." ref={textAreaRef} required />
+          <Btn type="submit">save</Btn>
         </StyledForm>
       </FormConatainer>
       <Footer>
@@ -190,11 +187,11 @@ const Registerpage = () => {
             <IoMdHome />
           </IconContainer>
         </SLink>
-        <Current>Current User: {user.roles.join(", ")}</Current>
+        <Current>Current User: {user.roles}</Current>
         <Status>Status: {user.active ? "Active" : "Diactivated"}</Status>
       </Footer>
     </RegMain>
   );
 };
 
-export default Registerpage;
+export default Createnote;

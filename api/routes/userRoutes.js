@@ -82,6 +82,7 @@ router.get("/alluser", async (req, res) => {
 router.put("/update/:userId", async (req, res) => {
   const userId = req.params.userId;
   const newUsername = req.body.username;
+  const newPassword = req.body.password;
 
   if (!userId) {
     return res.status(400).json("User ID required!");
@@ -98,11 +99,17 @@ router.put("/update/:userId", async (req, res) => {
       return res.status(409).json("Username Already Exists!");
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { $set: req.body },
-      { new: true }
-    );
+    const hashedPW = await bcrypt.hash(newPassword, 10);
+    foundUser.username = newUsername;
+    foundUser.password = hashedPW;
+
+    const updatedUser = await foundUser.save();
+
+    // const updatedUser = await User.findByIdAndUpdate(
+    //   userId,
+    //   { $set: req.body },
+    //   { new: true }
+    // );
     const { password, ...others } = updatedUser._doc;
     res.status(200).json(others);
     ////////////////////////////

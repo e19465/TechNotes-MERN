@@ -18,7 +18,6 @@ const userSlice = createSlice({
     },
 
     loginSuccess: (state, action) => {
-      console.log(action.payload);
       state.user = action.payload;
       state.isFetching = false;
       state.isError = false;
@@ -35,6 +34,10 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.isError = false;
     },
+
+    updateUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(PURGE, (state) => {
@@ -45,6 +48,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout } =
+export const { loginStart, loginSuccess, loginFailure, logout, updateUser } =
   userSlice.actions;
 export default userSlice.reducer;

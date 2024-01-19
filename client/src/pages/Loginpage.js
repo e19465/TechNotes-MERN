@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import api from "../api";
 import {
@@ -88,23 +88,6 @@ const Btn = styled.button`
   }
 `;
 
-const LastLine = styled.p`
-  margin-top: 10px;
-  color: #222;
-  font-weight: 500;
-  letter-spacing: 1px;
-  font-size: 13px;
-`;
-
-const SLink = styled(Link)`
-  text-decoration: none;
-  color: #6780fa;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
 const Loginpage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -149,9 +132,6 @@ const Loginpage = () => {
             ref={passwordRef}
           />
           <Btn type="submit">sign in</Btn>
-          <LastLine>
-            Don't have an account? <SLink to="/register">Register</SLink>
-          </LastLine>
         </StyledForm>
       </FormConatainer>
     </LogMain>

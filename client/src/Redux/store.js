@@ -1,5 +1,9 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userReducer from "./features/user/userSlice";
+import noteReducer from "./features/notes/noteSlice";
+import noteUpdateReducer from "./features/noteUpdate/noteUpdateSlice";
+import allNotesReducer from "./features/allNotes/allNotesSlice";
+
 import {
   persistStore,
   persistReducer,
@@ -22,6 +26,9 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: userReducer,
+  notes: noteReducer,
+  noteUpdate: noteUpdateReducer,
+  allNotes: allNotesReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
